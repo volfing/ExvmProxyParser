@@ -19,6 +19,13 @@ class Service
     protected $currentPage = 1;
     protected $proxyLimit = 100;
 
+    public function __construct($config)
+    {
+        if(isset($config["limit"])){
+            $this->proxyLimit = (int)$config["limit"];
+        }
+    }
+
     public function startParse($nextPage = null, $prepareDom = true){
         if(!empty($nextPage)){
             $this->url = $nextPage;

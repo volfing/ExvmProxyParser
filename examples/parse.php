@@ -9,6 +9,13 @@
 include "../autoload.php";
 
 $parser = new \ExvmProxyParser\ExvmProxyParser();
+$parser->disableAllServices();
+$parser->enableService("FreeproxyListRuService");
+$parser->setConfig("FreeproxyListRuService", [
+    "limit" => 2000,
+    "token" => "demo"
+]);
 
 echo "<pre>";
-var_dump($parser->startParsing());
+$parser->startParsing();
+var_dump($parser->getList());
