@@ -19,14 +19,19 @@ class Service
     protected $currentPage = 1;
     protected $proxyLimit = 100;
 
-    public function startParse($nextPage = null){
+    public function startParse($nextPage = null, $prepareDom = true){
         if(!empty($nextPage)){
             $this->url = $nextPage;
         }
 
         $response = $this->sendRequest();
 
-        $dom = $this->htmlToDomObject($response);
+        if($prepareDom){
+            $dom = $this->htmlToDomObject($response);
+        }else{
+            $dom = $response;
+        }
+
         $proxies = $this->findProxiesInDom($dom);
         $this->list = array_merge($this->list, $proxies);
 
