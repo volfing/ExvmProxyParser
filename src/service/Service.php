@@ -16,11 +16,27 @@ class Service
 {
     protected $url = null;
     protected $list = [];
+    protected $currentPage = 1;
+    protected $proxyLimit = 100;
 
     public function startParse($nextPage = null){
-        $nextPage = $this->findNextPage();
         if(!empty($nextPage)){
-            $this->startParse($nextPage);
+            $this->url = $nextPage;
+        }
+
+        $response = $this->sendRequest();
+
+        $dom = $this->htmlToDomObject($response);
+        $proxies = $this->findProxiesInDom($dom);
+        $this->list = array_merge($this->list, $proxies);
+
+        if($this->proxyLimit > count($this->list)){
+            $nextPage = $this->findNextPage();
+
+            if(!empty($nextPage)){
+                $this->currentPage ++;
+                $this->startParse($nextPage);
+            }
         }
     }
 
@@ -35,7 +51,7 @@ class Service
     }
 
     protected function findProxiesInDom($dom){
-        return null;
+        return [];
     }
 
     public function getList(){
@@ -48,9 +64,13 @@ class Service
         return $list;
     }
 
-    protected function sendRequest($data = array(), $type = "get"){
-        if(empty($this->url)){
+    protected function sendRequest($data = array(), $type = "get", $url = ""){
+        if(empty($this->url) && empty($url)){
             return false;
+        }
+
+        if(empty($url)){
+            $url = $this->url;
         }
 
         if($type == "get"){
@@ -64,9 +84,9 @@ class Service
         $client = new Client();
 
         if($type == "get"){
-            $response = $client->get($this->url . "?" . $data);
+            $response = $client->get($url . "?" . $data);
         }else{
-            $response = $client->post($this->url, [
+            $response = $client->post($url, [
                 "form_params" => $data
             ]);
         }

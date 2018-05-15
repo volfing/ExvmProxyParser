@@ -11,7 +11,7 @@ namespace ExvmProxyParser;
 class ExvmProxyParser
 {
     public function startParsing($limit = 1000){
-        $service = new Service\HttptunnelGe();
+        $service = new Service\FreeProxySaleComService();
 
         $service->startParse();
 

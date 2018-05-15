@@ -9,24 +9,9 @@
 namespace ExvmProxyParser\Service;
 
 
-class HttptunnelGe extends Service
+class HttptunnelGeService extends Service
 {
     protected $url = "http://www.httptunnel.ge/ProxyListForFree.aspx";
-
-    public function startParse($nextPage = null)
-    {
-        if(!empty($nextPage)){
-            $this->url = $nextPage;
-        }
-
-        $response = $this->sendRequest();
-
-        parent::startParse();
-
-        $dom = $this->htmlToDomObject($response);
-        $proxies = $this->findProxiesInDom($dom);
-        $this->list = array_merge($this->list, $proxies);
-    }
 
     protected function findProxiesInDom($dom)
     {
