@@ -52,7 +52,9 @@ class Service
     protected function htmlToDomObject($html){
         $dom = new Dom();
 
-        return $dom->load($html);
+        return $dom->load($html, [
+            "removeScripts" => false
+        ]);
     }
 
     protected function findProxiesInDom($dom){

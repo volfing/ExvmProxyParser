@@ -43,7 +43,7 @@ class FreeProxySaleComService extends Service
 
     protected function findNextPage()
     {
-        $res =  $this->sendRequest(["pg" => $this->currentPage]);
+        $res =  $this->sendRequest();
 
         $dom = $this->htmlToDomObject($res);
 

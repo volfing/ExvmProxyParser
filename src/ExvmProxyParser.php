@@ -11,7 +11,7 @@ namespace ExvmProxyParser;
 class ExvmProxyParser
 {
     public function startParsing($limit = 1000){
-        $service = new Service\SpysMeService();
+        $service = new Service\ProxyserversProService();
 
         $service->startParse();
 
