@@ -9,6 +9,7 @@
 namespace ExvmProxyParser;
 
 use ExvmProxyParser\Service\Service;
+use GuzzleHttp\Client;
 
 class ExvmProxyParser
 {
@@ -16,6 +17,7 @@ class ExvmProxyParser
     private $lastService;
     private $servicesConfig = [];
     private $disabledServices = [];
+    private $checkedList = [];
 
     public function getList(){
         return $this->list;
@@ -29,11 +31,90 @@ class ExvmProxyParser
         if(!$selfRun){
             $this->lastService = null;
             $this->list = [];
+            $this->checkedList = [];
         }
 
         if($this->executeService()){
             $this->startParsing($limit, true);
         }
+    }
+
+    public function checkListForValid($url = "https://google.com", $timeout = 5){
+        $this->checkedList = [];
+
+        foreach ($this->list as $item) {
+            try{
+                $code = $this->createRequest($url, $item, $timeout)->getStatusCode();
+            }catch (\GuzzleHttp\Exception\RequestException $exception){
+                $code = $exception->getCode();
+            }
+
+            $this->checkedList[] = array(
+                "proxy" => $item,
+                "valid" => $code == 200 ? true : false,
+                "response" => $code
+            );
+        }
+    }
+
+    public function proxyIsValid($proxy, $url = "https://google.com", $timeout = 5){
+        try{
+            $code = $this->createRequest($url, $proxy, $timeout)->getStatusCode();
+        }catch (\GuzzleHttp\Exception\RequestException $exception){
+            $code = $exception->getCode();
+        }
+
+        return $code == 200 ? true : false;
+    }
+
+    public function truncateList($limit){
+        $this->list = array_slice($this->list, 0, $limit);
+    }
+
+    public function getCheckedList(){
+        return $this->checkedList;
+    }
+
+    public function getValidList(){
+        if(empty($this->checkedList)){
+            return [];
+        }
+
+        $list = [];
+
+        foreach ($this->checkedList as $item) {
+            if($item["valid"]){
+                $list[] = $item["proxy"];
+            }
+        }
+
+        return $list;
+    }
+
+    public function getInvalidList(){
+        if(empty($this->checkedList)){
+            return [];
+        }
+
+        $list = [];
+
+        foreach ($this->checkedList as $item) {
+            if(!$item["valid"]){
+                $list[] = $item["proxy"];
+            }
+        }
+
+        return $list;
+    }
+
+    private function createRequest($url, $proxy, $timeout){
+        $client = new Client();
+        $response = $client->head($url, [
+            "proxy" => $proxy,
+            "timeout" => (int)$timeout
+        ]);
+
+        return $response;
     }
 
     public function disableService($service){

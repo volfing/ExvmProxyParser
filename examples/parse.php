@@ -12,10 +12,15 @@ $parser = new \ExvmProxyParser\ExvmProxyParser();
 $parser->disableAllServices();
 $parser->enableService("FreeproxyListRuService");
 $parser->setConfig("FreeproxyListRuService", [
-    "limit" => 2000,
+    "limit" => 100,
     "token" => "demo"
 ]);
 
 echo "<pre>";
+$start = time();
 $parser->startParsing();
-var_dump($parser->getList());
+$parser->truncateList(20);
+$parser->checkListForValid("https://www.instagram.com", 3);
+$end = time() - $start;
+echo "Work completed for {$end} seconds<br><br>";
+var_dump($parser->getValidList());

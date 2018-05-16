@@ -97,12 +97,18 @@ class Service
 
         $client = new Client();
 
+        $requestOptions = [
+            "headers" => [
+                "user-agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36"
+            ]
+        ];
+
         if($type == "get"){
-            $response = $client->get($url . "?" . $data);
+            $url = !empty($data) ? $url . "?" . $data : $url;
+            $response = $client->get($url, $requestOptions);
         }else{
-            $response = $client->post($url, [
-                "form_params" => $data
-            ]);
+            $requestOptions = array_merge($requestOptions, ["form_params" => $data]);
+            $response = $client->post($url, $requestOptions);
         }
 
         return $response->getBody()->getContents();

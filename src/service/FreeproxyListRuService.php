@@ -11,7 +11,7 @@ namespace ExvmProxyParser\Service;
 
 class FreeproxyListRuService extends Service
 {
-    protected $url = "http://www.freeproxy-list.ru/api/proxy?token={token}&count=10000&accessibility=60";
+    protected $url = "http://www.freeproxy-list.ru/api/proxy?token={token}&count={limit}&accessibility=60";
     private  $token;
 
     public function __construct($config)
@@ -24,9 +24,9 @@ class FreeproxyListRuService extends Service
     public function startParse($nextPage = null, $prepareDom = false)
     {
         if(strpos($this->url, "{token}") === false){
-           $this->url = preg_replace("/\?token\=(.*)&count/", "?token=" . $this->token . "&count", $this->url);
+            $this->url = preg_replace(array("/\?token\=(.*)&count/", "/\&count=(.*)\&accessibility/"), array("?token=" . $this->token . "&count", "&count=" . $this->proxyLimit . "&accessibility"), $this->url);
         }else{
-            $this->url = str_replace("{token}", $this->token, $this->url);
+            $this->url = str_replace(array("{token}", "{limit}"), array($this->token, (int)$this->proxyLimit), $this->url);
         }
 
         parent::startParse($nextPage, $prepareDom);
