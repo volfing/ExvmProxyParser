@@ -59,7 +59,8 @@ class ExvmProxyParser
 
     public static function proxyIsValid($proxy, $url = "https://google.com", $timeout = 5){
         try{
-            $code = $this->createRequest($url, $proxy, $timeout)->getStatusCode();
+            $parser = new ExvmProxyParser();
+            $code = $parser->createRequest($url, $proxy, $timeout)->getStatusCode();
         }catch (\GuzzleHttp\Exception\RequestException $exception){
             $code = $exception->getCode();
         }
