@@ -1,6 +1,6 @@
 {
-  "name": "volfing/ExvmProxyParser",
-  "description": "Parser for public proxy",
+  "name": "volfing/exvm-proxy-parser",
+  "description": "Php proxy parser",
   "keywords": [
     "Proxy",
     "Parser",
