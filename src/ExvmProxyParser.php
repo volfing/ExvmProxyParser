@@ -187,7 +187,7 @@ class ExvmProxyParser
     }
 
     private function getServices(){
-        $files = scandir(__DIR__ . "/service");
+        $files = scandir(__DIR__ . "/Service");
 
         $services = [];
 
