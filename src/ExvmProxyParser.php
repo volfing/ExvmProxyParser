@@ -127,7 +127,7 @@ class ExvmProxyParser
     }
 
     public function enableService($service){
-        if($key = array_search($service, $this->disabledServices) !== false){
+        if(($key = array_search($service, $this->disabledServices)) !== false){
             unset($this->disabledServices[$key]);
         }
     }
