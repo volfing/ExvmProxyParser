@@ -36,6 +36,7 @@ class UxProxyOrgService extends Service
     protected function findProxiesInDom($dom)
     {
         $lines = explode("\n", $dom);
+        $lines = array_filter($lines);
 
         $list = [];
 
